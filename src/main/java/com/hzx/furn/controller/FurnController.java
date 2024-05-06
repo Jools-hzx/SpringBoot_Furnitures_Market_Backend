@@ -3,10 +3,9 @@ package com.hzx.furn.controller;
 import com.hzx.furn.bean.Furn;
 import com.hzx.furn.service.FurnService;
 import com.hzx.furn.utils.Result;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,12 +16,42 @@ import java.util.List;
  * @date 2024/5/5 12:27
  * @description: TODO
  */
+@Slf4j
 @RestController
 @SuppressWarnings("all")
 public class FurnController {
 
     @Resource
     private FurnService furnService;
+
+    @GetMapping("/findById")
+    public Result<Furn> findFurnById(@RequestParam("id") Integer id) {
+        log.info("查询 Furn-id:{}", id);
+        Furn furn = furnService.getById(id);
+        if (null != furn) {
+            Result<Furn> success = Result.success(furn);
+            return success;
+        } else {
+            Result error = Result.failServerError();
+            return error;
+        }
+    }
+
+    @PutMapping("/update")
+    public Result<?> updateFurnById(@RequestBody Furn furn) {
+        try {
+            log.info("接收到更新 furn 请求:{}", furn);
+            boolean success = furnService.updateById(furn);
+            if (success) return Result.success("更新成功");
+            else {
+                Result result = Result.failServerError();
+                result.setData("更新失败");
+                return result;
+            }
+        } catch (Exception e) {
+            return Result.failServerError();
+        }
+    }
 
     @GetMapping("/list")
     public Result<List<Furn>> listAllFurns() {

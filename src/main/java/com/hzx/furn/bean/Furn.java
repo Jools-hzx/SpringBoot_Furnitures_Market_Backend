@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author Jools He
  * @version 1.0
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @TableName("furn")
-public class Furn {
+public class Furn implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
