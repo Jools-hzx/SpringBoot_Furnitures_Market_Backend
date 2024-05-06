@@ -1,5 +1,9 @@
 package com.hzx.furn.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hzx.furn.bean.Furn;
 import com.hzx.furn.service.FurnService;
@@ -25,15 +29,31 @@ public class FurnController {
     @Resource
     private FurnService furnService;
 
+    /**
+     * 分页按照关键字模糊查询数据
+     *
+     * @param currentPage 当前页码
+     * @param pageSize    页面数据容量
+     * @param search      模糊搜索的关键字
+     * @return 查询到的页面数据
+     */
     @GetMapping("/listByPage")
     public Result<Page<Furn>> listByPage(@RequestParam("currentPage") String currentPage,
-                                         @RequestParam("pageSize") String pageSize) {
+                                         @RequestParam("pageSize") String pageSize,
+                                         @RequestParam("search") String search) {
         log.info("查询分页数据，页数:{}, 页面总容量:{}", currentPage, pageSize);
         try {
             Page<Furn> page = new Page<>(); //创建一个分页模型
             page.setCurrent(Long.parseLong(currentPage));
             page.setSize(Long.parseLong(pageSize));
-            Page<Furn> furnPage = furnService.page(page);
+
+            //构建一个查询条件包装类
+            QueryWrapper<Furn> queryWrapper = Wrappers.query();
+            if (StringUtils.isNotBlank(search)) {
+                queryWrapper.like("name", search);
+            }
+
+            Page<Furn> furnPage = furnService.page(page, queryWrapper);
             if (null != furnPage.getRecords()) {
                 return Result.success(furnPage);
             } else {

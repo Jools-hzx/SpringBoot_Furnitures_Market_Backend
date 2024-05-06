@@ -1,7 +1,12 @@
 package com.hzx.furn.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hzx.furn.bean.Furn;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -65,5 +70,33 @@ public class FurnServiceTest {
         System.out.println("查询到的总记录数目:" + total);
         System.out.println("当前查询第: " + furnPage.getCurrent() + "页");
         System.out.println("当前页面的 size:" + furnPage.getSize());
+    }
+
+    @Test
+    public void testListPagesLikeName() {
+        Page<Furn> page = new Page<>();
+        //确认实际数据数量符号要求，否则不会执行
+        //具体数据的 SQL 语句（如 SELECT * FROM furn WHERE (name LIKE ?) LIMIT ?, ?）
+        page.setCurrent(3); //当前页
+        page.setSize(5);    //每页存放的数据总量
+
+        // Step1：创建一个 QueryWrapper 对象
+        QueryWrapper<Furn> queryWrapper = Wrappers.query();
+
+        // Step2： 构造查询条件
+        /*
+        queryWrapper.select()
+                .eq("age", 20)
+                .like("name", "X");
+         */
+        queryWrapper.like("name", "小");
+
+        // Step3：执行查询
+        // Step3：执行查询
+        Page<Furn> furnPage = furnService.page(page, queryWrapper);
+        List<Furn> records = furnPage.getRecords();
+        for (Furn record : records) {
+            System.out.println(record);
+        }
     }
 }

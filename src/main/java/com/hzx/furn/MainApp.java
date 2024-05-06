@@ -3,6 +3,9 @@ package com.hzx.furn;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import javax.sql.DataSource;
 
 /**
  * @author Jools He
@@ -16,6 +19,8 @@ public class MainApp {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(MainApp.class, args);
+        ConfigurableApplicationContext ioc = SpringApplication.run(MainApp.class, args);
+        DataSource dataSource = ioc.getBean(DataSource.class);
+        System.out.println(dataSource.getClass());
     }
 }
