@@ -24,6 +24,16 @@ public class FurnController {
     @Resource
     private FurnService furnService;
 
+    @DeleteMapping("/delById")
+    public Result<?> delFurnById(@RequestParam("id") Integer id) {
+        log.info("删除 Furn-id: {}", id);
+        boolean removed = furnService.removeById(id);
+        if (removed) {
+            Result<String> success = Result.success("删除成功");
+            return success;
+        } else return Result.failServerError();
+    }
+
     @GetMapping("/findById")
     public Result<Furn> findFurnById(@RequestParam("id") Integer id) {
         log.info("查询 Furn-id:{}", id);

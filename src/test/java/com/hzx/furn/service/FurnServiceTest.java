@@ -41,4 +41,10 @@ public class FurnServiceTest {
         Furn furn = furnService.getById("5");
         System.out.println("查询到的结果为:" + furn);
     }
+
+    @Test
+    public void delFurnById() {
+        boolean removed = furnService.removeById(11);
+        if (removed) System.out.println("删除成功~");
+    }
 }
