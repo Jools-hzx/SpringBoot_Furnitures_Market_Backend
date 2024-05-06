@@ -1,5 +1,6 @@
 package com.hzx.furn.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hzx.furn.bean.Furn;
 import com.hzx.furn.service.FurnService;
 import com.hzx.furn.utils.Result;
@@ -23,6 +24,25 @@ public class FurnController {
 
     @Resource
     private FurnService furnService;
+
+    @GetMapping("/listByPage")
+    public Result<Page<Furn>> listByPage(@RequestParam("currentPage") String currentPage,
+                                         @RequestParam("pageSize") String pageSize) {
+        log.info("查询分页数据，页数:{}, 页面总容量:{}", currentPage, pageSize);
+        try {
+            Page<Furn> page = new Page<>(); //创建一个分页模型
+            page.setCurrent(Long.parseLong(currentPage));
+            page.setSize(Long.parseLong(pageSize));
+            Page<Furn> furnPage = furnService.page(page);
+            if (null != furnPage.getRecords()) {
+                return Result.success(furnPage);
+            } else {
+                return Result.failServerError();
+            }
+        } catch (NumberFormatException e) {
+            return Result.failServerError();
+        }
+    }
 
     @DeleteMapping("/delById")
     public Result<?> delFurnById(@RequestParam("id") Integer id) {
