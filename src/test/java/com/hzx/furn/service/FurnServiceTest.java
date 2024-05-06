@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hzx.furn.bean.Furn;
+import com.sun.org.apache.bcel.internal.generic.LMUL;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -97,6 +98,35 @@ public class FurnServiceTest {
         List<Furn> records = furnPage.getRecords();
         for (Furn record : records) {
             System.out.println(record);
+        }
+    }
+
+    @Test
+    public void testLambdaQueryExamples() {
+
+        /*
+         这个函数式接口的源码如下
+        @FunctionalInterface
+        public interface SFunction<T, R> extends Function<T, R>, Serializable {
+        }
+
+        表示根据类型 T 的参数获取到类型 R 的结果
+        @FunctionalInterface
+        public interface Function<T, R> {
+           R apply(T t);
+           //另外就是一些默认实现的方法
+        }
+
+        传入 Furn::getName 之后，就相当于实现了 SFunction 的 apply 方法
+        底层会通过你传入的 Furn::getName 得到该方法对应的属性映射的表字段
+         */
+        LambdaQueryWrapper<Furn> lambdaQuery = Wrappers.lambdaQuery();
+        String search = "X";
+        lambdaQuery.like(Furn::getName, search);
+
+        List<Furn> furns = furnService.list(lambdaQuery);
+        for (Furn furn : furns) {
+            System.out.println(furn);
         }
     }
 }
