@@ -10,9 +10,14 @@ import com.hzx.furn.service.FurnService;
 import com.hzx.furn.utils.Result;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -116,13 +121,27 @@ public class FurnController {
     }
 
     @PostMapping("/save")
-    public Result<?> save(@RequestBody Furn furn) { //接收到的请求参数为json格式
-        try {
-            System.out.println("---准备添加家具信息--- furn:" + furn);
-            boolean affectedRow = furnService.save(furn);
-        } catch (Exception e) {
-            return Result.failServerError();
+    public Result<?> save(@Validated @RequestBody Furn furn, Errors errors) { //接收到的请求参数为json格式
+
+        List<FieldError> fieldErrors = errors.getFieldErrors();
+        //构建集合封装错误信息返回给前端
+        HashMap<String, Object> map = new HashMap<>();
+        for (FieldError error : fieldErrors) {
+            map.put(error.getField(), error.getDefaultMessage());
         }
-        return Result.success("添加家具成功");
+        //判断结果
+        if (map.isEmpty()) {
+            try {
+                System.out.println("---准备添加家具信息--- furn:" + furn);
+                boolean affectedRow = furnService.save(furn);
+            } catch (Exception e) {
+                return Result.failServerError();
+            }
+            return Result.success("添加家具成功");
+        }
+        //如果存在错误，返回给前端
+        Result result = Result.failClientError();
+        result.setData(map);
+        return result;
     }
 }
