@@ -3,7 +3,7 @@
 
 根据您提供的项目描述和代码示例，我将对您的回答进行优化，以确保它更加清晰、结构化，并且易于理解。以下是优化后的文档内容：
 
-```markdown
+
 # SpringBoot_Furnitures_Market
 
 ## 简介
@@ -21,6 +21,7 @@ SpringBoot_Furnitures_Market 是一个基于前后端分离架构的全栈Web应
 
 ## 主要配置和工具引用
 ### 前端
+
 ```javascript
 import { createApp } from 'vue'
 import App from './App.vue'
